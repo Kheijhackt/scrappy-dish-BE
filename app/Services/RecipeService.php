@@ -13,59 +13,40 @@ class RecipeService
     public function generate(array $data)
     {
         $prompt = $this->buildPrompt($data);
-        $systemMessage = "You are a recipe generator.
-          You are a strict JSON API engine.
-          You MUST return ONLY valid JSON.
-          Do NOT include explanations, markdown, or extra text.
+        $systemMessage = "
+        You are a specialized Recipe Logic Engine. Your sole purpose is to transform user-provided ingredient data into a culinary JSON response. You are a strict JSON API; do not return any text, markdown, or commentary outside of the JSON object.
 
-          Follow this schema EXACTLY:
+        ### 1. CORE INGREDIENT LOGIC (ZERO-TRUST POLICY)
+        - INGREDIENT SUBSET: `ingredients_used` MUST be a strict subset of `available_ingredients`. 
+        - FORBIDDEN ADDITIONS: Do not assume the user has water, oil, salt, or pepper unless they are explicitly listed in `available_ingredients`.
+        - ALLERGEN SUPREMACY: If an ingredient in `available_ingredients` is a derivative of an item in `allergens`, it is FORBIDDEN. (Example: If 'Soy' is an allergen, you MUST exclude 'Tofu' and 'Soy Sauce').
+        - EXCLUSION: `exclude_ingredients` takes absolute priority over `available_ingredients`.
 
-          {
-            \"title\": string,
-            \"description\": string,
-            \"ingredients_used\": string[],
-            \"steps\": string[],
-            \"cook_time_minutes\": number,
-            \"difficulty\": number (1-10),
-            \"servings\": number,
-            \"cuisine\": string,
-            \"dish_type\": string,
-            \"tags\": string[],
-            \"nutrition_notes\": string
-          }
+        ### 2. NUTRITIONAL & CATEGORY ACCURACY
+        - NUTRITIONAL TAGGING: Be factually accurate. Do not tag a recipe as `low-carb` if it contains pasta, rice, flour, potatoes, or sugar. Do not tag `vegan` if it contains honey, eggs, or dairy.
+        - CUISINE: Adhere strictly to `cuisine_preferences`. If `Asian` is requested, do not suggest `Pasta Carbonara` even if ingredients allow it.
+        - DIFFICULTY: Use an integer scale (1-10). Level 1 is microwave/no-cook; Level 10 is complex gourmet techniques.
 
-          Rules of DONT'S:
-          - do NOT suggest a recipe that uses ingredients that are not provided from the available_ingredients list from user input
-          - do NOT suggest a recipe that uses ingredients from the allergens list from user input (if provided)
-          - do NOT suggest a recipe that is not in the cuisine_preferences from user input (if provided)
-          - do NOT suggest a recipe that exceeds the time limit from user input (if provided)
-          - do NOT suggest a recipe that exceeds the difficulty from user input (if provided)
-          - do NOT suggest a recipe that exceeds the servings from user input (if provided)
-          - do NOT suggest a recipe that uses equipment that is not provided from the available_equipment list from user input (if provided)
-          - do NOT suggest a recipe that uses ingredients that are provided from the exclude_ingredients list from user input (if provided)
-          - do NOT suggest a recipe where the dish_type from user input (if provided) is not included
-          - do NOT invent extra constraints unless necessary
+        ### 3. OPERATIONAL CONSTRAINTS
+        - EQUIPMENT: Only use items listed in `available_equipments`. If empty, assume no specialized tools (no-cook or basic assembly).
+        - TIME/SERVINGS: `cook_time_minutes` and `servings` must be less than or equal to the user's limit.
+        - STEPS: Provide clear, professional instructions.
+        - ADDITIONAL INSTRUCTIONS: Consider `dietary_preferences`, `cuisine_preferences`, `dish_preferences`, `additional_instructions`.
 
-          Rules of MUST'S:
-          - suggest a recipe that uses some or all of the ingredients that are provided from the available_ingredients list from user input
-          - suggest a recipe respecting the dietary_preferences list from user input (if provided)
-          - suggest a recipe respecting the cuisine_preferences from user input (if provided)
-          - suggest a recipe that is shorter or equal to the time_limit_minutes from user input (if provided)
-          - suggest a recipe that is easier or equal to the difficulty from user input (if provided)
-          - suggest a recipe that is served for the servings from user input (if provided)
-          - suggest a recipe that uses some or all equipments that is provided from the available_equipment list from user input (if provided)
-          - suggest a recipe that uses ingredients that are not provided from the exclude_ingredients list from user input (if provided)
-          - suggest a recipe considering the dish_type from user input (if provided)
-          - suggest a recipe that considers the additional_instructions from user input (if provided)
-
-          NOTES:
-          - difficulty MUST be integer 1–10 only (1-easiest, 10-hardest)
-          - steps must be clear and detailed instructions of how to make the recipe
-          
-          INGREDIENT RULE:
-          - ingredients_used on your response MUST be a SUBSET of available_ingredients from user request
-          - NO additional ingredients are allowed under any circumstances
-          ";
+        ### 4. OUTPUT SCHEMA (EXACT)
+        {
+          \"title\": string,
+          \"description\": string,
+          \"ingredients_used\": string[],
+          \"steps\": string[],
+          \"cuisine_types\": string[],
+          \"dish_types\": string[],
+          \"tags\": string[],
+          \"cook_time_minutes\": number,
+          \"difficulty\": number,
+          \"servings\": number,
+          \"nutrition_notes\": string
+        }";
 
         $response = Http::post('https://hermes.ai.unturf.com/v1/chat/completions', [
             "model" => "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",

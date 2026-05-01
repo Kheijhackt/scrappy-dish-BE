@@ -37,8 +37,8 @@ class RecipeResource extends JsonResource
                 'cook_time_minutes' => $this['cook_time_minutes'],
                 'difficulty' => $this['difficulty'],
                 'servings' => $this['servings'],
-                'cuisine' => $this['cuisine'],
-                'dish_type' => $this['dish_type'],
+                'cuisine_types' => $this['cuisine_types'],
+                'dish_types' => $this['dish_types'],
                 'tags' => $this['tags'],
                 'nutrition_notes' => $this['nutrition_notes'],
             ]

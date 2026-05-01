@@ -25,15 +25,15 @@ class AiRecipeValidator
     $requiredStrings = [
       'title',
       'description',
-      'cuisine',
-      'dish_type',
       'nutrition_notes'
     ];
 
     $requiredArrays = [
       'ingredients_used',
       'steps',
-      'tags'
+      'tags',
+      'cuisine_types',
+      'dish_types'
     ];
 
     $requiredInts = [
