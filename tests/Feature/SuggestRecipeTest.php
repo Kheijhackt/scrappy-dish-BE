@@ -73,4 +73,27 @@ class SuggestRecipeTest extends TestCase
             ]
         ]);
     }
+
+    public function test_recipe_endpoint_returns_error_response_due_to_bad_request()
+    {
+        Http::fake([
+            'hermes.ai.unturf.com/*' => Http::response([
+                'choices' => []
+            ], 422)
+        ]);
+
+        $response = $this->postJson('/api/recipe/suggest', [
+            "available_ingredients" => [],
+            "dietary_preferences" => ["keto"],
+            "cuisine_preferences" => ["Mediterranean"],
+            "dish_preferences" => ["lunch"],
+            "available_equipments" => ["knife", "bowl"],
+            "cook_time_minutes" => 10,
+            "difficulty" => 1,
+            "servings" => 1,
+            "additional_instructions" => "Make it keto"
+        ]);
+
+        $response->assertStatus(422);
+    }
 }
