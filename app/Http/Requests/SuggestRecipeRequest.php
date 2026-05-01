@@ -26,20 +26,32 @@ class SuggestRecipeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ingredients' => ['required', 'array', 'min:1'],
-            'ingredients.*' => ['required', 'string'],
+            'available_ingredients' => ['required', 'array', 'min:1'],
+            'available_ingredients.*' => ['required', 'string'],
+
             'allergens' => ['nullable', 'array'],
             'allergens.*' => ['string'],
+
             'dietary_preferences' => ['nullable', 'array'],
             'dietary_preferences.*' => ['string'],
-            'cuisine_preference' => ['nullable', 'string'],
+
+            'cuisine_preferences' => ['nullable', 'array'],
+            'cuisine_preferences.*' => ['string'],  
+
             'time_limit_minutes' => ['nullable', 'integer'],
             'difficulty' => ['nullable', 'integer'],
             'servings' => ['nullable', 'integer'],
-            'available_equipment' => ['nullable', 'array'],
-            'available_equipment.*' => ['string'],
+
+            'available_equipments' => ['nullable', 'array'],
+            'available_equipments.*' => ['string'],
+
             'exclude_ingredients' => ['nullable', 'array'],
             'exclude_ingredients.*' => ['string'],
+
+            'dish_type' => ['nullable', 'array'],
+            'dish_type.*' => ['string'],
+
+            'additional_instructions' => ['nullable', 'string']
         ];
     }
 

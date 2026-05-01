@@ -2,24 +2,36 @@
 
 namespace App\Services;
 
+
 class AiRecipeValidator
 {
-  public function isValid(array $data): bool
+  public function isValid(array $data, array $request): array
   {
+    $logName = "AI Response Recipe Validator: ";
+    $response = [
+      'valid' => true,
+      'message' => 'AI response is valid'
+    ];
+
     if(!is_array($data)) {
-      return false;
+      $response = [
+        'valid' => false,
+        'message' => $logName . 'Data must be an array'
+      ];
+
+      return $response;
     }
     
     $requiredStrings = [
       'title',
       'description',
       'cuisine',
+      'dish_type',
       'nutrition_notes'
     ];
 
     $requiredArrays = [
       'ingredients_used',
-      'missing_ingredients',
       'steps',
       'tags'
     ];
@@ -32,26 +44,57 @@ class AiRecipeValidator
 
     foreach($requiredStrings as $field) {
       if(!isset($data[$field]) || !is_string($data[$field])) {
-        return false;
+        $response = [
+          'valid' => false,
+          'message' => $logName . $field . ' is required and must be a string'
+        ];
+
+        return $response;
       }
     }
 
     foreach($requiredArrays as $field) {
       if(!isset($data[$field]) || !is_array($data[$field])) {
-        return false;
+        $response = [
+          'valid' => false,
+          'message' => $logName . $field . ' is required and must be an array'
+        ];
+
+        return $response;
       }
     }
 
     foreach($requiredInts as $field) {
       if(!isset($data[$field]) || !is_int($data[$field])) {
-        return false;
+        $response = [
+          'valid' => false,
+          'message' => $logName . $field . ' is required and must be an integer'
+        ];
+
+        return $response;
+      }
+    }
+
+    foreach($data['ingredients_used'] as $ingredient) {
+      if(!in_array($ingredient, $request['available_ingredients'])) {
+        $response = [
+          'valid' => false,
+          'message' => $logName . 'Ingredient ' . $ingredient . ' is not in available ingredients'
+        ];
+
+        return $response;
       }
     }
 
     if($data['difficulty'] < 1 || $data['difficulty'] > 10) {
-      return false;
+      $response = [
+        'valid' => false,
+        'message' => $logName . 'Difficulty must be between 1 and 10'
+      ];
+
+      return $response;
     }
 
-    return true;
+    return $response;
   }
 }
