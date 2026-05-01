@@ -31,9 +31,9 @@ class AiRecipeValidator
     $requiredArrays = [
       'ingredients_used',
       'steps',
-      'tags',
-      'cuisine_types',
-      'dish_types'
+      'general_tags',
+      'cuisine_tags',
+      'dish_tags'
     ];
 
     $requiredInts = [
