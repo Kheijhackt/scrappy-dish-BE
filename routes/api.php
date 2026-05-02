@@ -10,3 +10,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/recipes/suggest-single', [RecipeController::class, 'suggestSingle'])->name('recipe.suggest-single');
+Route::post('/recipes/suggest-multiple', [RecipeController::class, 'suggestMultiple'])->name('recipe.suggest-multiple');

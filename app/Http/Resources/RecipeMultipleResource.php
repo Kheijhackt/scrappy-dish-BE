@@ -5,15 +5,15 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RecipeSingleResource extends JsonResource
+class RecipeMultipleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
-     *
      */
 
+      
     protected bool $success;
     protected string $message;
 
@@ -23,7 +23,6 @@ class RecipeSingleResource extends JsonResource
         $this->success = $success;
         $this->message = $message;
     }
-
     public function toArray(Request $request): array
     {
         if(!$this->success) {
@@ -37,19 +36,25 @@ class RecipeSingleResource extends JsonResource
         return [
             'success' => $this->success,
             'message' => $this->message,
+
             'data' => [
-                'title' => $this['title'],
-                'description' => $this['description'],
-                'ingredients_used' => $this['ingredients_used'],
-                'steps' => $this['steps'],
-                'cook_time_minutes' => $this['cook_time_minutes'],
-                'difficulty' => $this['difficulty'],
-                'servings' => $this['servings'],
-                'cuisine_tags' => $this['cuisine_tags'],
-                'dish_tags' => $this['dish_tags'],
-                'general_tags' => $this['general_tags'],
-                'nutrition_notes' => $this['nutrition_notes'],
                 'created_epoch' => $this['created_epoch'],
+
+                'recipes' => collect($this['recipes'])->map(function ($recipe) {
+                    return [
+                        'title' => $recipe['title'],
+                        'description' => $recipe['description'],
+                        'ingredients_used' => $recipe['ingredients_used'],
+                        'steps' => $recipe['steps'],
+                        'cook_time_minutes' => $recipe['cook_time_minutes'],
+                        'difficulty' => $recipe['difficulty'],
+                        'servings' => $recipe['servings'],
+                        'cuisine_tags' => $recipe['cuisine_tags'],
+                        'dish_tags' => $recipe['dish_tags'],
+                        'general_tags' => $recipe['general_tags'],
+                        'nutrition_notes' => $recipe['nutrition_notes'],
+                    ];
+                })->values(),
             ]
         ];
     }

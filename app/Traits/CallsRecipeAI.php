@@ -11,8 +11,8 @@ trait CallsRecipeAI
         string $prompt,
         array $options = []
     ): array {
-
-        $response = Http::post('https://hermes.ai.unturf.com/v1/chat/completions', [
+        $timeout = $options['timeout'] ?? 120;
+        $response = Http::timeout($timeout)->post('https://hermes.ai.unturf.com/v1/chat/completions', [
             "model" => "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
             "messages" => [
                 [

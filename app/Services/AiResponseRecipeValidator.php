@@ -3,9 +3,9 @@
 namespace App\Services;
 
 
-class AiSingleRecipeValidator
+class AiResponseRecipeValidator
 {
-  public function isValid(array $data, array $request): array
+  public function isValidSingle(array $data, array $request): array
   {
     $logName = "AI Response Recipe Validator (Single): ";
     $response = [
@@ -93,6 +93,34 @@ class AiSingleRecipeValidator
       ];
 
       return $response;
+    }
+
+    return $response;
+  }
+
+  public function isValidMultiple(array $data, array $request): array
+  {
+    $logName = "AI Response Recipe Validator (Multiple): ";
+    $response = [
+      'valid' => true,
+      'message' => 'AI response is valid'
+    ];
+
+    if(!is_array($data)) {
+      $response = [
+        'valid' => false,
+        'message' => $logName . 'Data must be an array'
+      ];
+
+      return $response;
+    }
+
+    foreach($data['recipes'] as $recipe) {
+      $result = $this->isValidSingle($recipe, $request);
+      if(!$result['valid']) {
+        $response = $result;
+        return $response;
+      }
     }
 
     return $response;
