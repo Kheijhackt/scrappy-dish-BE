@@ -2,13 +2,15 @@
 
 namespace App\Services;
 
+use App\Traits\CallsRecipeAI;
 use Illuminate\Support\Facades\Http;
-use App\Services\AiRecipeValidator;
+use App\Services\AiSingleRecipeValidator;
 
 class RecipeService
 {
+    use CallsRecipeAI;
 
-    public function __construct(private AiRecipeValidator $validator) {}
+    public function __construct(private AiSingleRecipeValidator $validator) {}
 
     public function generateSingle(array $data)
     {
@@ -55,37 +57,21 @@ class RecipeService
           \"nutrition_notes\": string
         }";
 
-        $response = Http::post('https://hermes.ai.unturf.com/v1/chat/completions', [
-            "model" => "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
-            "messages" => [
-                [
-                    "role" => "system",
-                    "content" => $systemMessage
-                ],
-                [
-                    "role" => "user",
-                    "content" => $prompt
-                ]
-            ],
-            "temperature" => 0.1,
-            "max_tokens" => 1000,
-            "top_p" => 0.9,
-            "frequency_penalty" => 0,
-            "presence_penalty" => 0,
-            "stream" => false
+        $response = $this->callRecipeAI($systemMessage, $prompt, [
+            'temperature' => 0.1,
+            'max_tokens' => 1000,
+            'top_p' => 0.9,
+            'frequency_penalty' => 0,
+            'presence_penalty' => 0
         ]);
 
-        $content = $response->json('choices.0.message.content');
-        $decoded = json_decode($content, true);
-        $decoded['created_epoch'] = $response->json('created');
-
-        $validatorResult = $this->validator->isValid($decoded, $data);
+        $validatorResult = $this->validator->isValid($response, $data);
 
         if(!$validatorResult['valid']) {
             throw new \Exception($validatorResult['message']);
         }
 
-        return $decoded;
+        return $response;
     }
 
     private function buildPrompt(array $data): string

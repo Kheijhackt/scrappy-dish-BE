@@ -3,11 +3,11 @@
 namespace App\Services;
 
 
-class AiRecipeValidator
+class AiSingleRecipeValidator
 {
   public function isValid(array $data, array $request): array
   {
-    $logName = "AI Response Recipe Validator: ";
+    $logName = "AI Response Recipe Validator (Single): ";
     $response = [
       'valid' => true,
       'message' => 'AI response is valid'

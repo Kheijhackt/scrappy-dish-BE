@@ -9,4 +9,4 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/recipes/suggest-single', [RecipeController::class, 'suggest'])->name('recipe.suggest-single');
+Route::post('/recipes/suggest-single', [RecipeController::class, 'suggestSingle'])->name('recipe.suggest-single');

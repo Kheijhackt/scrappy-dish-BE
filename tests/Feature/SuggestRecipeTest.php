@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class SuggestRecipeTest extends TestCase
 {
-    public function test_recipe_endpoint_returns_success_response()
+    public function test_single_recipe_endpoint_returns_success_response()
     {
         Http::fake([
             'hermes.ai.unturf.com/*' => Http::response([
@@ -76,7 +76,7 @@ class SuggestRecipeTest extends TestCase
         ]);
     }
 
-    public function test_recipe_endpoint_returns_error_response_due_to_bad_request()
+    public function test_single_recipe_endpoint_returns_error_response_due_to_bad_request()
     {
         Http::fake([
             'hermes.ai.unturf.com/*' => Http::response([

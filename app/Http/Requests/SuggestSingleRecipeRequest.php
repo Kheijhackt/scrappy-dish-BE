@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Override;
 
-class SuggestRecipeRequest extends FormRequest
+class SuggestSingleRecipeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,23 +29,8 @@ class SuggestRecipeRequest extends FormRequest
             'available_ingredients' => ['required', 'array', 'min:1'],
             'available_ingredients.*' => ['required', 'string'],
 
-            'dietary_preferences' => ['nullable', 'array'],
-            'dietary_preferences.*' => ['string'],
-
-            'cuisine_preferences' => ['nullable', 'array'],
-            'cuisine_preferences.*' => ['string'],  
-
-            'dish_preferences' => ['nullable', 'array'],
-            'dish_preferences.*' => ['string'],
-
             'available_equipments' => ['nullable', 'array'],
             'available_equipments.*' => ['string'],
-
-            'cook_time_minutes' => ['nullable', 'integer'],
-            'difficulty' => ['nullable', 'integer'],
-            'servings' => ['nullable', 'integer'],
-
-            'additional_instructions' => ['nullable', 'string']
         ];
     }
 

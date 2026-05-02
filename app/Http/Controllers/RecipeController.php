@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 
-use App\Http\Requests\SuggestRecipeRequest;
+use App\Http\Requests\SuggestSingleRecipeRequest;
 use App\Services\RecipeService;
-use App\Http\Resources\RecipeResource;
+use App\Http\Resources\RecipeSingleResource;
 
 class RecipeController extends Controller
 {
-    public function suggest(SuggestRecipeRequest $request, RecipeService $service){
+    public function suggestSingle(SuggestSingleRecipeRequest $request, RecipeService $service){
         $result = $service->generateSingle($request->validated());
         try {
-            return response()->json(new RecipeResource($result, true, 'Recipe generated successfully'));
+            return response()->json(new RecipeSingleResource($result, true, 'Recipe generated successfully'));
         } catch (\Throwable $e) {
-            return response()->json(new RecipeResource($result, false, $e->getMessage()), 422);
+            return response()->json(new RecipeSingleResource($result, false, $e->getMessage()), 422);
         }
     }
 }

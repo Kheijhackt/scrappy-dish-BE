@@ -2,14 +2,14 @@
 
 namespace Tests\Unit;
 
-use App\Services\AiRecipeValidator;
+use App\Services\AiSingleRecipeValidator;
 use Tests\TestCase;
 
 class AiRecipeValidatorTest extends TestCase
 {
-    public function test_valid_ai_response_passes()
+    public function test_valid_ai_responses_passes_single()
     {
-        $validator = new AiRecipeValidator();
+        $validator = new AiSingleRecipeValidator();
 
         $request = [
             "available_ingredients" => ["egg", "rice", "soy sauce"]
@@ -36,9 +36,9 @@ class AiRecipeValidatorTest extends TestCase
         $this->assertEquals("AI response is valid", $result['message']);
     }
 
-    public function test_invalid_ingredient_fails_validation()
+    public function test_invalid_ingredient_fails_validation_single()
     {
-        $validator = new AiRecipeValidator();
+        $validator = new AiSingleRecipeValidator();
 
         $request = [
             "available_ingredients" => ["egg", "rice"]
