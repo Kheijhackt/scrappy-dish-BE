@@ -33,7 +33,15 @@ class RecipeService
         - STEPS: Provide clear, professional instructions.
         - ADDITIONAL INSTRUCTIONS: Consider `dietary_preferences`, `cuisine_preferences`, `dish_preferences`, `additional_instructions`.
 
-        ### 4. OUTPUT SCHEMA (EXACT)
+        ### 4. STEP GENERATION POLICY
+        - Steps must follow real cooking chronology.
+        - Preparation steps must come before cooking.
+        - Assembly must happen after cooking.
+        - Serving instructions must be last.
+        - Never skip intermediate preparation logic.
+        - Do not compress multiple kitchen actions into one step.
+
+        ### 5. OUTPUT SCHEMA (EXACT)
         {
           \"title\": string,
           \"description\": string,
