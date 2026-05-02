@@ -10,7 +10,7 @@ use App\Http\Resources\RecipeResource;
 class RecipeController extends Controller
 {
     public function suggest(SuggestRecipeRequest $request, RecipeService $service){
-        $result = $service->generate($request->validated());
+        $result = $service->generateSingle($request->validated());
         try {
             return response()->json(new RecipeResource($result, true, 'Recipe generated successfully'));
         } catch (\Throwable $e) {

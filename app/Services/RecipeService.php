@@ -10,7 +10,7 @@ class RecipeService
 
     public function __construct(private AiRecipeValidator $validator) {}
 
-    public function generate(array $data)
+    public function generateSingle(array $data)
     {
         $prompt = $this->buildPrompt($data);
         $systemMessage = "
@@ -31,7 +31,6 @@ class RecipeService
         - EQUIPMENT: Only use items listed in `available_equipments`. If empty, assume no specialized tools (no-cook or basic assembly).
         - TIME/SERVINGS: `cook_time_minutes` and `servings` must be less than or equal to the user's limit.
         - STEPS: Provide clear, professional instructions.
-        - ADDITIONAL INSTRUCTIONS: Consider `dietary_preferences`, `cuisine_preferences`, `dish_preferences`, `additional_instructions`.
 
         ### 4. STEP GENERATION POLICY
         - Steps must follow real cooking chronology.
@@ -78,6 +77,7 @@ class RecipeService
 
         $content = $response->json('choices.0.message.content');
         $decoded = json_decode($content, true);
+        $decoded['created_epoch'] = $response->json('created');
 
         $validatorResult = $this->validator->isValid($decoded, $data);
 

@@ -33,7 +33,8 @@ class SuggestRecipeTest extends TestCase
                                 "cuisine_tags" => ["Mediterranean"],
                                 "dish_tags" => ["lunch"],
                                 "general_tags" => ["keto"],
-                                "nutrition_notes" => "Low carb and high fat"
+                                "nutrition_notes" => "Low carb and high fat",
+                                "created_epoch" => 1777707148
                             ])
                         ]
                     ]
@@ -41,7 +42,7 @@ class SuggestRecipeTest extends TestCase
             ], 200)
         ]);
 
-        $response = $this->postJson('/api/recipe/suggest', [
+        $response = $this->postJson('/api/recipes/suggest-single', [
             "available_ingredients" => ["chicken breast", "spinach", "avocado"],
             "dietary_preferences" => ["keto"],
             "cuisine_preferences" => ["Mediterranean"],
@@ -69,7 +70,8 @@ class SuggestRecipeTest extends TestCase
                 "cuisine_tags",
                 "dish_tags",
                 "general_tags",
-                "nutrition_notes"
+                "nutrition_notes",
+                "created_epoch"
             ]
         ]);
     }
@@ -82,7 +84,7 @@ class SuggestRecipeTest extends TestCase
             ], 422)
         ]);
 
-        $response = $this->postJson('/api/recipe/suggest', [
+        $response = $this->postJson('/api/recipes/suggest-single', [
             "available_ingredients" => [],
             "dietary_preferences" => ["keto"],
             "cuisine_preferences" => ["Mediterranean"],

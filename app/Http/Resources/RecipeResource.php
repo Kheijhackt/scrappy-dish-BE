@@ -41,6 +41,7 @@ class RecipeResource extends JsonResource
                 'dish_tags' => $this['dish_tags'],
                 'general_tags' => $this['general_tags'],
                 'nutrition_notes' => $this['nutrition_notes'],
+                'created_epoch' => $this['created_epoch'],
             ]
         ];
     }

@@ -26,7 +26,8 @@ class AiRecipeValidatorTest extends TestCase
             "general_tags" => ["easy"],
             "cuisine_tags" => ["asian"],
             "dish_tags" => ["lunch"],
-            "nutrition_notes" => "balanced"
+            "nutrition_notes" => "balanced",
+            "created_epoch" => 1777707148
         ];
 
         $result = $validator->isValid($data, $request);
@@ -54,7 +55,8 @@ class AiRecipeValidatorTest extends TestCase
             "general_tags" => ["easy"],
             "cuisine_tags" => ["asian"],
             "dish_tags" => ["lunch"],
-            "nutrition_notes" => "balanced"
+            "nutrition_notes" => "balanced",
+            "created_epoch" => 1777707148
         ];
 
         $result = $validator->isValid($data, $request);
