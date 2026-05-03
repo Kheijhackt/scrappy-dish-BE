@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SuggestMultipleRecipeRequest;
 use App\Http\Requests\SuggestSingleRecipeRequest;
 use App\Http\Resources\RecipeMultipleResource;
-use App\Services\RecipeService;
+use App\Services\RecipeAiService;
 use App\Http\Resources\RecipeSingleResource;
 
-class RecipeController extends Controller
+class RecipeAiController extends Controller
 {
-    public function suggestSingle(SuggestSingleRecipeRequest $request, RecipeService $service){
+    public function suggestSingle(SuggestSingleRecipeRequest $request, RecipeAiService $service){
         $result = null;
         try {
             $result = $service->generateSingle($request->validated());
@@ -20,7 +20,7 @@ class RecipeController extends Controller
         }
     }
 
-    public function suggestMultiple(SuggestMultipleRecipeRequest $request, RecipeService $service){
+    public function suggestMultiple(SuggestMultipleRecipeRequest $request, RecipeAiService $service){
         $result = null;
         try {
             $result = $service->generateMultiple($request->validated());

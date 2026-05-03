@@ -6,7 +6,7 @@ use App\Traits\CallsRecipeAI;
 use Illuminate\Support\Facades\Http;
 use App\Services\AiResponseRecipeValidator;
 
-class RecipeService
+class RecipeAiService
 {
     use CallsRecipeAI;
 
