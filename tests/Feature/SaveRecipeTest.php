@@ -4,7 +4,7 @@ use App\Models\User;
 
 uses(RefreshDatabase::class);
 
-test('user can save a recipe', function () {
+test('auth user can save a recipe', function () {
     $user = User::factory()->create();
 
     $token = $user->createToken('test-token')->plainTextToken;
@@ -42,9 +42,10 @@ test('user can save a recipe', function () {
         'nutrition_notes' => $payload['nutrition_notes'],
         'user_id' => $user->id
     ]);
+    $this->assertDatabaseCount('recipes', 1);
 });
 
-test('unauthenticated user cannot save a recipe', function () {
+test('unauth user cannot save a recipe', function () {
     $user = User::factory()->create();
     $token = 'invalid-token';
 
@@ -67,9 +68,10 @@ test('unauthenticated user cannot save a recipe', function () {
     ])->postJson('/api/recipes/save', $payload);
 
     $response->assertStatus(401);
+    $this->assertDatabaseCount('recipes', 0);
 });
 
-test('user submits a recipe with invalid data', function () {
+test('auth user submits a recipe with invalid data', function () {
     $user = User::factory()->create();
     $token = $user->createToken('test-token')->plainTextToken;
 
@@ -92,4 +94,5 @@ test('user submits a recipe with invalid data', function () {
     ])->postJson('/api/recipes/save', $payload);
 
     $response->assertStatus(422);
+    $this->assertDatabaseCount('recipes', 0);
 });

@@ -23,4 +23,9 @@ class RecipeService
       'nutrition_notes' => $data['nutrition_notes'],
     ]);
   }
+
+  public function getRecipeById(User $user, int $id): Recipe
+  {
+    return $user->recipes()->findOrFail($id);
+  }
 }

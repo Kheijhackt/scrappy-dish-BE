@@ -15,4 +15,5 @@ Route::post('/recipes/suggest-multiple', [RecipeAiController::class, 'suggestMul
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/recipes/save', [RecipeController::class, 'saveRecipe'])->name('recipes.save');
+    Route::get('/recipes/{id}', [RecipeController::class, 'getRecipeById'])->name('recipes.get-recipe');
 });
