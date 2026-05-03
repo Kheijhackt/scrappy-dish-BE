@@ -7,16 +7,19 @@ use App\Http\Requests\SuggestSingleRecipeRequest;
 use App\Http\Resources\RecipeMultipleResource;
 use App\Services\RecipeAiService;
 use App\Http\Resources\RecipeSingleResource;
+use App\Traits\ApiResponse;
 
 class RecipeAiController extends Controller
 {
+    use ApiResponse;
     public function suggestSingle(SuggestSingleRecipeRequest $request, RecipeAiService $service){
         $result = null;
         try {
             $result = $service->generateSingle($request->validated());
-            return response()->json(new RecipeSingleResource($result, true, 'Recipe generated successfully'));
+            $resource = (new RecipeSingleResource($result))->toArray($request);
+            return ApiResponse::success($resource, 'Recipe generated successfully');
         } catch (\Throwable $e) {
-            return response()->json(new RecipeSingleResource($result, false, $e->getMessage()), 422);
+            return ApiResponse::error([], $e->getMessage());
         }
     }
 
@@ -24,9 +27,10 @@ class RecipeAiController extends Controller
         $result = null;
         try {
             $result = $service->generateMultiple($request->validated());
-            return response()->json(new RecipeMultipleResource($result, true, 'Recipes generated successfully'));
+            $resource = (new RecipeMultipleResource($result))->toArray($request);
+            return ApiResponse::success($resource, 'Recipes generated successfully');
         } catch (\Throwable $e) {
-            return response()->json(new RecipeMultipleResource($result, false, $e->getMessage()), 422);
+            return ApiResponse::error([], $e->getMessage());
         }
     }
 }

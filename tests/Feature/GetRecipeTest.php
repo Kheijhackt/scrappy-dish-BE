@@ -33,7 +33,7 @@ test('auth user cannot retrieve one recipe that does not belong to them', functi
         'Authorization' => 'Bearer ' . $token,
     ])->getJson('/api/recipes/' . $recipe->id);
 
-    $response->assertStatus(500);
+    $response->assertStatus(422);
 });
 
 test('unauth user cannot retrieve one recipe', function () {

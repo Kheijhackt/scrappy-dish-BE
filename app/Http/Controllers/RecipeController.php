@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\SaveRecipeRequest;
 use App\Services\RecipeService;
@@ -10,14 +11,16 @@ use App\Http\Resources\GetOneRecipeResource;
 
 class RecipeController extends Controller
 {
+    use ApiResponse;
     public function saveRecipe(SaveRecipeRequest $request, RecipeService $service)
     {
         $result = null;
         try {
             $result = $service->saveRecipe($request->user(), $request->validated());
-            return response()->json(new SaveRecipeResource($result, true, 'Recipe saved successfully'));
+            $resource = (new SaveRecipeResource($result))->toArray($request);
+            return Apiresponse::success($resource, 'Recipe saved successfully');
         } catch (\Throwable $e) {
-            return response()->json(new SaveRecipeResource($result, false, $e->getMessage()), 422);
+            return Apiresponse::error([], $e->getMessage());
         }
     }
 
@@ -26,9 +29,10 @@ class RecipeController extends Controller
         $result = null;
         try {
             $result = $service->getRecipeById($request->user(), $id);
-            return response()->json(new GetOneRecipeResource($result, true, 'Recipe retrieved successfully'));
+            $resource = (new GetOneRecipeResource($result))->toArray($request);
+            return Apiresponse::success($resource, 'Recipe retrieved successfully');
         } catch (\Throwable $e) {
-            return response()->json(new GetOneRecipeResource($result, false, $e->getMessage()), 422);
+            return Apiresponse::error([], $e->getMessage());
         }
     }
 }
