@@ -21,6 +21,7 @@ test('auth user can retrieve one recipe', function () {
         'message',
         'data'
     ]);
+    $this->assertTrue($response['data']['id'] == $recipe->id);
 });
 
 test('auth user cannot retrieve one recipe that does not belong to them', function () {
