@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\SaveRecipeRequest;
 use App\Services\RecipeService;
 use App\Http\Resources\SaveRecipeResource;
 use App\Http\Resources\GetOneRecipeResource;
+use App\Http\Resources\GetRecipesSummaryResource;
+use App\Traits\ApiResponse;
 
 class RecipeController extends Controller
 {
@@ -18,9 +19,9 @@ class RecipeController extends Controller
         try {
             $result = $service->saveRecipe($request->user(), $request->validated());
             $resource = (new SaveRecipeResource($result))->toArray($request);
-            return Apiresponse::success($resource, 'Recipe saved successfully');
+            return ApiResponse::success($resource, 'Recipe saved successfully');
         } catch (\Throwable $e) {
-            return Apiresponse::error([], $e->getMessage());
+            return ApiResponse::error([], $e->getMessage());
         }
     }
 
@@ -30,9 +31,38 @@ class RecipeController extends Controller
         try {
             $result = $service->getRecipeById($request->user(), $id);
             $resource = (new GetOneRecipeResource($result))->toArray($request);
-            return Apiresponse::success($resource, 'Recipe retrieved successfully');
+            return ApiResponse::success($resource, 'Recipe retrieved successfully');
         } catch (\Throwable $e) {
-            return Apiresponse::error([], $e->getMessage());
+            return ApiResponse::error([], $e->getMessage());
+        }
+    }
+
+    public function getPaginatedRecipes(Request $request, RecipeService $service)
+    {
+        $perPage = min($request->input('perPage', 15), 50);
+        $user = $request->user();
+
+        $result = null;
+        try {
+            $result = $service->getPaginatedRecipes($user, $perPage);
+            $resource = GetRecipesSummaryResource::collection($result)->toArray($request);
+            $resource = [
+                'recipes' => $resource,
+                'pagination' => [
+                    'current_page' => $result->currentPage(),
+                    'last_page' => $result->lastPage(),
+                    'per_page' => $perPage,
+                    'total' => $result->total()
+                ]
+            ];
+
+            if ($result ->isEmpty()) {
+                return ApiResponse::success($resource, 'No recipes found');
+            }
+
+            return ApiResponse::success($resource, 'Summary of Recipes retrieved successfully');
+        } catch (\Throwable $e) {
+            return ApiResponse::error([], $e->getMessage());
         }
     }
 }

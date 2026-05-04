@@ -1,19 +1,20 @@
 <?php
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 use App\Models\Recipe;
 
 uses(RefreshDatabase::class);
 
-test('auth user can retrieve one recipe', function () {
+test('auth user can retrieve paginated recipes', function () {
     $user = User::factory()->create();
-    $recipe = Recipe::factory()->create(['user_id' => $user->id]);
 
     $token = $user->createToken('test-token')->plainTextToken;
+    Recipe::factory(10)->create(['user_id' => $user->id]);
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
-    ])->getJson('/api/recipes/' . $recipe->id);
+    ])->getJson('/api/recipes' . '?page=1&per_page=15');
 
     $response->assertStatus(200);
     $response->assertJsonStructure([
@@ -21,31 +22,28 @@ test('auth user can retrieve one recipe', function () {
         'message',
         'data'
     ]);
-    $this->assertTrue($response['data']['id'] == $recipe->id);
 });
 
-test('auth user cannot retrieve one recipe that does not belong to them', function () {
+test('auth user cannot retrieve paginated recipes that do not belong to them', function () {
     $user = User::factory()->create();
-    $recipe = Recipe::factory()->create(['user_id' => User::factory()->create()->id]);
-
+    Recipe::factory(10)->create(['user_id' => User::factory()->create()->id]);
     $token = $user->createToken('test-token')->plainTextToken;
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
-    ])->getJson('/api/recipes/' . $recipe->id);
+    ])->getJson('/api/recipes' . '?page=1&per_page=15');
 
-    $response->assertStatus(422);
+    $response->assertJson(['message' => 'No recipes found']);
 });
 
-test('unauth user cannot retrieve one recipe', function () {
+test('unauth user cannot retrieve paginated recipes', function () {
     $user = User::factory()->create();
-    $recipe = Recipe::factory()->create(['user_id' => $user->id]);
-
+    Recipe::factory(10)->create(['user_id' => $user->id]);
     $token = 'invalid-token';
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
-    ])->getJson('/api/recipes/' . $recipe->id);
+    ])->getJson('/api/recipes' . '?page=1&per_page=15');
 
     $response->assertStatus(401);
 });

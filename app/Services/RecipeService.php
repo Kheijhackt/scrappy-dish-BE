@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Recipe;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class RecipeService
 {
@@ -27,5 +28,10 @@ class RecipeService
   public function getRecipeById(User $user, int $id): Recipe
   {
     return $user->recipes()->findOrFail($id);
+  }
+
+  public function getPaginatedRecipes(User $user, int $perPage = 15): LengthAwarePaginator
+  {
+    return $user->recipes()->latest()->paginate($perPage);
   }
 }
