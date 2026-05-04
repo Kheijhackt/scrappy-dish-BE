@@ -6,7 +6,7 @@ use App\Models\Recipe;
 
 uses(RefreshDatabase::class);
 
-test('auth user can delete a recipe', function () {
+test('auth user can delete a recipe that exists', function () {
     $user = User::factory()->create();
     $recipe = Recipe::factory()->create(['user_id' => $user->id]);
     $token = $user->createToken('test-token')->plainTextToken;
@@ -21,6 +21,18 @@ test('auth user can delete a recipe', function () {
             'id' => $recipe->id
         ]
     ]);
+    $this->assertDatabaseCount('recipes', 0);
+});
+
+test('auth user cannot delete a recipe that does not exist', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('test-token')->plainTextToken;
+
+    $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+    ])->deleteJson('/api/recipes/1');
+
+    $response->assertStatus(422);
     $this->assertDatabaseCount('recipes', 0);
 });
 

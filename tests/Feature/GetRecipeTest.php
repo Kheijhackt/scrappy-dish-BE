@@ -5,7 +5,7 @@ use App\Models\Recipe;
 
 uses(RefreshDatabase::class);
 
-test('auth user can retrieve one recipe', function () {
+test('auth user can retrieve one recipe that exists', function () {
     $user = User::factory()->create();
     $recipe = Recipe::factory()->create(['user_id' => $user->id]);
 
@@ -22,6 +22,18 @@ test('auth user can retrieve one recipe', function () {
         'data'
     ]);
     $this->assertTrue($response['data']['id'] == $recipe->id);
+});
+
+test('auth user cannot retrieve one recipe that does not exist', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('test-token')->plainTextToken;
+
+    $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+    ])->getJson('/api/recipes/1');
+
+    $response->assertStatus(422);
+    $this->assertDatabaseCount('recipes', 0);
 });
 
 test('auth user cannot retrieve one recipe that does not belong to them', function () {
