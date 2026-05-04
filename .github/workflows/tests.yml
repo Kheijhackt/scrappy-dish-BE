@@ -1,4 +1,4 @@
-name: Laravel Tests
+name: Scrappy Dish Feature and Unit Tests
 
 on:
   push:
