@@ -8,6 +8,7 @@ use App\Services\RecipeService;
 use App\Http\Resources\SaveRecipeResource;
 use App\Http\Resources\GetOneRecipeResource;
 use App\Http\Resources\GetRecipesSummaryResource;
+use App\Http\Resources\DeleteOneRecipeResource;
 use App\Traits\ApiResponse;
 
 class RecipeController extends Controller
@@ -61,6 +62,18 @@ class RecipeController extends Controller
             }
 
             return ApiResponse::success($resource, 'Summary of Recipes retrieved successfully');
+        } catch (\Throwable $e) {
+            return ApiResponse::error([], $e->getMessage());
+        }
+    }
+
+    public function deleteRecipeById(Request $request, int $id, RecipeService $service)
+    {
+        $result = null;
+        try {
+            $result = $service->deleteRecipeById($request->user(), $id);
+            $resource = (new DeleteOneRecipeResource($result))->toArray($request);
+            return ApiResponse::success($resource, 'Recipe deleted successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());
         }

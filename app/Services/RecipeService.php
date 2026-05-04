@@ -34,4 +34,11 @@ class RecipeService
   {
     return $user->recipes()->latest()->paginate($perPage);
   }
+
+  public function deleteRecipeById(User $user, int $id): Recipe
+  {
+    $recipe = $user->recipes()->findOrFail($id);
+    $recipe->delete();
+    return $recipe;
+  }
 }

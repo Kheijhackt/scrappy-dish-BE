@@ -17,4 +17,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/recipes/save', [RecipeController::class, 'saveRecipe'])->name('recipes.save');
     Route::get('/recipes/{id}', [RecipeController::class, 'getRecipeById'])->name('recipes.get-recipe');
     Route::get('/recipes', [RecipeController::class, 'getPaginatedRecipes'])->name('recipes.get-paginated-recipes');
+    Route::delete('/recipes/{id}', [RecipeController::class, 'deleteRecipeById'])->name('recipes.delete-recipe');
 });
