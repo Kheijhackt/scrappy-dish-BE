@@ -11,7 +11,13 @@ services:
     volumes:
       - .:/app
     working_dir: /app
+    command: ["tail", "-f", "/dev/null"]
+
+  serve:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
     ports:
       - "8000:8000"
-    # ⚠️ --host=0.0.0.0 is CRITICAL. Without it, your browser can't reach the container.
     command: sh -c "php artisan serve --host=0.0.0.0 --port=8000"
