@@ -12,6 +12,7 @@ Route::post('/recipes/suggest-multiple', [RecipeAiController::class, 'suggestMul
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'getCurrentUser'])->name('users.get-current-user');
+    Route::patch('/user', [UserController::class, 'updateCurrentUser'])->name('users.update-current-user');
 
     Route::post('/recipes/save', [RecipeController::class, 'saveRecipe'])->name('recipes.save');
     Route::get('/recipes/{id}', [RecipeController::class, 'getRecipeById'])->name('recipes.get-recipe');

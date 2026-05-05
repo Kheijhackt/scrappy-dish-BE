@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use App\Services\UserService;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -15,6 +17,18 @@ class UserController extends Controller
         try {
             $resource = (new UserResource($result));
             return ApiResponse::success($resource->toArray($request), 'User retrieved successfully');
+        } catch (\Throwable $e) {
+            return ApiResponse::error([], $e->getMessage());
+        }
+    }
+
+    public function updateCurrentUser(UpdateUserRequest $request, UserService $service)
+    {
+        $result = null;
+        try {
+            $result = $service->updateCurrentUser($request->user(), $request->validated());
+            $resource = (new UserResource($result));
+            return ApiResponse::success($resource->toArray($request), 'User updated successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());
         }
