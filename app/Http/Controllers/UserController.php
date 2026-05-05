@@ -33,4 +33,16 @@ class UserController extends Controller
             return ApiResponse::error([], $e->getMessage());
         }
     }
+
+    public function deleteCurrentUser(Request $request, UserService $service)
+    {
+        $result = null;
+        try {
+            $result = $service->deleteCurrentUser($request->user());
+            $resource = (new UserResource($result));
+            return ApiResponse::success($resource->toArray($request), 'User deleted successfully');
+        } catch (\Throwable $e) {
+            return ApiResponse::error([], $e->getMessage());
+        }
+    }
 }

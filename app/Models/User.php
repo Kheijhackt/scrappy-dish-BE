@@ -49,4 +49,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Recipe::class);
     }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user) {
+            $user->tokens()->delete();
+        });
+    }
 }

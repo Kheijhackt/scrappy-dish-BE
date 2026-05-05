@@ -11,4 +11,10 @@ class UserService
     $user->update($data);
     return $user;
   }
+
+  public function deleteCurrentUser(User $user) {
+    $user = User::findOrFail($user->id);
+    $user->delete();
+    return $user;
+  }
 }
