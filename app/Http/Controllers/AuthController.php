@@ -21,4 +21,15 @@ class AuthController extends Controller
             return ApiResponse::error([], $e->getMessage());
         }
     }
+
+    public function logoutAll(Request $request, AuthService $service) {
+        $result = null;
+        try {
+            $result = $service->deleteAllUserTokens($request->user());
+            $resource = (new UserResource($result));
+            return ApiResponse::success($resource->toArray($request), 'User logged out of all devices successfully');
+        } catch (\Throwable $e) {
+            return ApiResponse::error([], $e->getMessage());
+        }
+    }
 }

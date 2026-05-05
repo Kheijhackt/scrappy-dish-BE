@@ -11,4 +11,10 @@ class AuthService
     $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
     return $user;
   }
+
+  public function deleteAllUserTokens(User $user): User
+  {
+    $user->tokens()->delete();
+    return $user;
+  }
 }

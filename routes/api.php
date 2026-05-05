@@ -21,4 +21,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/recipes/{id}', [RecipeController::class, 'deleteRecipeById'])->name('recipes.delete-recipe');
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+    Route::get('/logout-all', [AuthController::class, 'logoutAll'])->name('auth.logout-all');
 });
