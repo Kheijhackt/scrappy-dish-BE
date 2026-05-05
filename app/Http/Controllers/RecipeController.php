@@ -19,8 +19,8 @@ class RecipeController extends Controller
         $result = null;
         try {
             $result = $service->saveRecipe($request->user(), $request->validated());
-            $resource = (new SaveRecipeResource($result))->toArray($request);
-            return ApiResponse::success($resource, 'Recipe saved successfully');
+            $resource = (new SaveRecipeResource($result));
+            return ApiResponse::success($resource->toArray($request), 'Recipe saved successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());
         }
@@ -31,8 +31,8 @@ class RecipeController extends Controller
         $result = null;
         try {
             $result = $service->getRecipeById($request->user(), $id);
-            $resource = (new GetOneRecipeResource($result))->toArray($request);
-            return ApiResponse::success($resource, 'Recipe retrieved successfully');
+            $resource = (new GetOneRecipeResource($result));
+            return ApiResponse::success($resource->toArray($request), 'Recipe retrieved successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());
         }
@@ -46,7 +46,7 @@ class RecipeController extends Controller
         $result = null;
         try {
             $result = $service->getPaginatedRecipes($user, $perPage);
-            $resource = GetRecipesSummaryResource::collection($result)->toArray($request);
+            $resource = GetRecipesSummaryResource::collection($result);
             $resource = [
                 'recipes' => $resource,
                 'pagination' => [
@@ -72,8 +72,8 @@ class RecipeController extends Controller
         $result = null;
         try {
             $result = $service->deleteRecipeById($request->user(), $id);
-            $resource = (new DeleteOneRecipeResource($result))->toArray($request);
-            return ApiResponse::success($resource, 'Recipe deleted successfully');
+            $resource = (new DeleteOneRecipeResource($result));
+            return ApiResponse::success($resource->toArray($request), 'Recipe deleted successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());
         }

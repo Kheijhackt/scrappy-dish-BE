@@ -16,8 +16,8 @@ class RecipeAiController extends Controller
         $result = null;
         try {
             $result = $service->generateSingle($request->validated());
-            $resource = (new RecipeSingleResource($result))->toArray($request);
-            return ApiResponse::success($resource, 'Recipe generated successfully');
+            $resource = (new RecipeSingleResource($result));
+            return ApiResponse::success($resource->toArray($request), 'Recipe generated successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());
         }
@@ -27,8 +27,8 @@ class RecipeAiController extends Controller
         $result = null;
         try {
             $result = $service->generateMultiple($request->validated());
-            $resource = (new RecipeMultipleResource($result))->toArray($request);
-            return ApiResponse::success($resource, 'Recipes generated successfully');
+            $resource = (new RecipeMultipleResource($result));
+            return ApiResponse::success($resource->toArray($request), 'Recipes generated successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());
         }
