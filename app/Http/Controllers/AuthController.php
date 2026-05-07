@@ -6,10 +6,24 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 use App\Http\Resources\UserResource;
+use App\Http\Requests\AuthRequest;
+use App\Http\Resources\AuthResource;
 
 class AuthController extends Controller
 {
     use ApiResponse;
+
+    public function continueWithGoogle(AuthRequest $request, AuthService $service) {
+        $result = null;
+        $idToken = $request->input('id_token');
+        try {
+            $result = $service->authenticateUser($idToken);
+            $resource = (new AuthResource($result));
+            return ApiResponse::success($resource->toArray($request), 'User signed in successfully');
+        } catch (\Throwable $e) {
+            return ApiResponse::error([], $e->getMessage());
+        }
+    }
     
     public function logout(Request $request, AuthService $service) {
         $result = null;

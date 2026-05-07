@@ -10,6 +10,8 @@ use App\Http\Controllers\AuthController;
 Route::post('/recipes/suggest-single', [RecipeAiController::class, 'suggestSingle'])->name('recipes.suggest-single');
 Route::post('/recipes/suggest-multiple', [RecipeAiController::class, 'suggestMultiple'])->name('recipes.suggest-multiple');
 
+Route::post('/auth/google', [AuthController::class, 'continueWithGoogle'])->name('auth.google');
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'getCurrentUser'])->name('users.get-current-user');
     Route::patch('/user', [UserController::class, 'updateCurrentUser'])->name('users.update-current-user');
