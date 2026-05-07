@@ -24,6 +24,15 @@ class AuthController extends Controller
             return ApiResponse::error([], $e->getMessage());
         }
     }
+
+    public function verifyUser() {
+        try {
+            return ApiResponse::success([], 'User verified successfully');
+        }
+        catch (\Throwable $e) {
+            return ApiResponse::error([], $e->getMessage());
+        }
+    }
     
     public function logout(Request $request, AuthService $service) {
         $result = null;

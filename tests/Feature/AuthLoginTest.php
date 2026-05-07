@@ -104,3 +104,32 @@ test('user cannot sign up or login with invalid google id token', function () {
     $this->assertDatabaseCount('users', 0);
     $this->assertDatabaseCount('personal_access_tokens', 0);
 });
+
+test('user successfully verified', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('test-token')->plainTextToken;
+
+    $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
+    ])->getJson('/api/auth/me');
+
+    $response->assertStatus(200);
+    $this->assertDatabaseCount('users', 1);
+    $this->assertDatabaseCount('personal_access_tokens', 1);
+});
+
+test('unauth user cannot be verified', function () {
+    $user = User::factory()->create();
+    $user->createToken('test-token')->plainTextToken;
+    $token = 'invalid-token';
+
+    $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
+    ])->getJson('/api/auth/me');
+
+    $response->assertStatus(401);
+    $this->assertDatabaseCount('users', 1);
+    $this->assertDatabaseCount('personal_access_tokens', 1);
+});
