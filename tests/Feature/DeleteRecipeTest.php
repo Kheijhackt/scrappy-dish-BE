@@ -13,6 +13,7 @@ test('auth user can delete a recipe that exists', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->deleteJson('/api/recipes/' . $recipe->id);
 
     $response->assertStatus(200);
@@ -30,6 +31,7 @@ test('auth user cannot delete a recipe that does not exist', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->deleteJson('/api/recipes/1');
 
     $response->assertStatus(422);
@@ -43,6 +45,7 @@ test('auth user cannot delete a recipe that does not belong to them', function (
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->deleteJson('/api/recipes/' . $recipe->id);
 
     $response->assertStatus(422);
@@ -56,6 +59,7 @@ test('unauth user cannot delete a recipe', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->deleteJson('/api/recipes/' . $recipe->id);
 
     $response->assertStatus(401);

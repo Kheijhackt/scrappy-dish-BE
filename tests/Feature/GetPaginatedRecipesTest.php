@@ -14,6 +14,7 @@ test('auth user can retrieve paginated recipes', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/recipes' . '?page=1&per_page=15');
 
     $response->assertStatus(200);
@@ -31,6 +32,7 @@ test('auth user cannot retrieve paginated recipes that do not belong to them', f
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/recipes' . '?page=1&per_page=15');
 
     $response->assertJson(['message' => 'No recipes found']);
@@ -43,6 +45,7 @@ test('unauth user cannot retrieve paginated recipes', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/recipes' . '?page=1&per_page=15');
 
     $response->assertStatus(401);

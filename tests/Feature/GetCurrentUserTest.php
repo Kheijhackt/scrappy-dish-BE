@@ -11,6 +11,7 @@ test('auth user can get current user', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/user');
 
     $response->assertStatus(200);
@@ -29,6 +30,7 @@ test('auth user cannot get any other user', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/user/' . $otherUser->id);
 
     $response->assertStatus(404);
@@ -39,6 +41,7 @@ test('unauth user cannot get current user', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/user');
 
     $response->assertStatus(401);

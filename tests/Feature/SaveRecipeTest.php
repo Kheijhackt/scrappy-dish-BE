@@ -25,6 +25,7 @@ test('auth user can save a recipe', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->postJson('/api/recipes/save', $payload);
 
     $response->assertStatus(200);
@@ -65,6 +66,7 @@ test('unauth user cannot save a recipe', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->postJson('/api/recipes/save', $payload);
 
     $response->assertStatus(401);
@@ -91,6 +93,7 @@ test('auth user submits a recipe with invalid data', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->postJson('/api/recipes/save', $payload);
 
     $response->assertStatus(422);

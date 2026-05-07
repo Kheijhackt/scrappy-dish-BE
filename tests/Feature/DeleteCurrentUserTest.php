@@ -12,6 +12,7 @@ test('auth user can delete current user with owned recipes and tokens', function
     
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->deleteJson('/api/user');
 
     $response->assertStatus(200);
@@ -31,6 +32,7 @@ test('unauth user cannot delete any user', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->deleteJson('/api/user');
 
     $response->assertStatus(401);

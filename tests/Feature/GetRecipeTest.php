@@ -13,6 +13,7 @@ test('auth user can retrieve one recipe that exists', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/recipes/' . $recipe->id);
 
     $response->assertStatus(200);
@@ -30,6 +31,7 @@ test('auth user cannot retrieve one recipe that does not exist', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/recipes/1');
 
     $response->assertStatus(422);
@@ -44,6 +46,7 @@ test('auth user cannot retrieve one recipe that does not belong to them', functi
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/recipes/' . $recipe->id);
 
     $response->assertStatus(422);
@@ -57,6 +60,7 @@ test('unauth user cannot retrieve one recipe', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/recipes/' . $recipe->id);
 
     $response->assertStatus(401);

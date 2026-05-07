@@ -10,6 +10,7 @@ test('auth user can update current user', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->patchJson('/api/user', [
         'name' => 'Updated name',
     ]);
@@ -29,6 +30,7 @@ test('auth user cannot update current user due to request validation error', fun
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->patchJson('/api/user', [
         'name' => '',
     ]);
@@ -42,6 +44,7 @@ test('unauth user cannot update current user', function () {
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->patchJson('/api/user', [
         'name' => 'Updated name',
     ]);

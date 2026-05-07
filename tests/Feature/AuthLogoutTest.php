@@ -11,7 +11,8 @@ test('auth user can logout and deletes the currently owned token', function () {
 
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/logout');
 
     $response->assertStatus(200);
@@ -25,7 +26,8 @@ test('unauth user cannot logout', function () {
     $token = 'invalid-token';
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json'
     ])->getJson('/api/logout');
 
     $response->assertStatus(401);
@@ -43,7 +45,8 @@ test('auth user can logout all logged in sessions and deletes all owned tokens',
     $authToken = fake()->randomElement($tokens);
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $authToken
+        'Authorization' => 'Bearer ' . $authToken,
+        'Accept' => 'application/json'
     ])->getJson('/api/logout-all');
 
     $response->assertStatus(200);
@@ -62,7 +65,8 @@ test('unauth user cannot logout all logged in sessions', function () {
     $currentToken = 'invalid-token';
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $currentToken
+        'Authorization' => 'Bearer ' . $currentToken,
+        'Accept' => 'application/json'
     ])->getJson('/api/logout-all');
 
     $response->assertStatus(401);
