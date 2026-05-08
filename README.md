@@ -1,59 +1,140 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Scrappy Dish | Backend [BETA]
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This app provides recipe suggestions based on available ingredients and other customized preset filters. The recipes suggestions are powered by Hermes AI.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Public endpoint for suggesting single and multiple recipes.
+- Users can save their recipes when they create an account (through Google).
+- Suggest recipes based on variuos filters for better results.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Public Endpoints
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### AI Suggestions
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### POST : `/api/recipes/suggest-single`
 
-## Laravel Sponsors
+This endpoint returns a suggested single recipe based on user's available ingredients and equipments.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Request**
 
-### Premium Partners
+```
+available_ingredients: string[], required,
+available_equipments: string[]
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+#### POST : `/api/recipes/suggest-multiple`
 
-## Contributing
+This endpoint returns suggested recipes based on user's customized parameters.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Request**
 
-## Code of Conduct
+```
+available_ingredients: string[], required,
+dietary_preferences: string[],
+cuisine_preferences: string[],
+dish_preferences: string[],
+available_equipments: string[],
+cook_time_minutes: integer,
+difficulty: integer, min:1, max:10,
+servings: integer, min:1,
+additional_instructions: string
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Private Endpoints
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+These endpoints require a valid auth token to be attached to the header as bearer token for each request.
 
-## License
+### Authentication
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### POST : `/api/auth/google`
+
+This endpoint returns the user's info with an auth token after google validation. It expects an id token from the firebase google auth. This is used for both google sign-up and sign-in.
+
+**Request**
+
+```
+id_token: string, required
+```
+
+#### GET : `/api/auth/me`
+
+This endpoint checks the current user if it's verified or not. It returns status code `200` if authenticated, `401` otherwise.
+
+#### GET : `/api/logout`
+
+This endpoint deletes the user's current token.
+
+#### GET : `/api/logout-all`
+
+This endpoint deletes all existing tokens of the user.
+
+### User
+
+#### GET : `/api/user`
+
+This endpoint returns the current user's info.
+
+#### PATCH: `/api/user`
+
+This endpoint partially update the user based on the parameters given.
+
+**Request**
+
+```
+name: string,
+avatar: string
+```
+
+#### DELETE : `/api/user`
+
+This endpoint deletes the current user and all its owned recipes and tokens.
+
+### Recipe
+
+#### POST : `/api/recipes/save`
+
+This endpoint saves the recipe for the user.
+
+**Request**
+
+```
+title: string, required
+description: string, required
+ingredients_used: string[], required,
+steps: string[], required,
+cook_time_minutes: integer, required,
+difficulty: integer, min:1, max:10, required,
+serbings: integer, min:1, required,
+cuisine_tags: string[], required,
+dish_tags: string[], required,
+general_tags: string[], required,
+nutrition_notes: string, required
+```
+
+#### GET : `/api/recipes{id}`
+
+This endpoint returns a detailed saved recipe owned by the user.
+
+#### GET : `/api/recipes?`
+
+**Params**:
+
+```
+page: integer, required
+per_page: integer, min:15, max:50, required
+```
+
+#### DELETE : `/api/recipes{id}`
+
+This endpoint deletes a specified recipe of the user.
+
+---
+
+Developer: Kian Jacob Anthony Tubalinal
