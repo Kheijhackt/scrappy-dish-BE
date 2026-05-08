@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\User;
 use App\Models\Recipe;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -13,15 +13,15 @@ test('auth user can retrieve paginated recipes', function () {
     Recipe::factory(10)->create(['user_id' => $user->id]);
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
-    ])->getJson('/api/recipes' . '?page=1&per_page=15');
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
+    ])->getJson('/api/recipes'.'?page=1&per_page=15');
 
     $response->assertStatus(200);
     $response->assertJsonStructure([
         'success',
         'message',
-        'data'
+        'data',
     ]);
 });
 
@@ -31,9 +31,9 @@ test('auth user cannot retrieve paginated recipes that do not belong to them', f
     $token = $user->createToken('test-token')->plainTextToken;
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
-    ])->getJson('/api/recipes' . '?page=1&per_page=15');
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
+    ])->getJson('/api/recipes'.'?page=1&per_page=15');
 
     $response->assertJson(['message' => 'No recipes found']);
 });
@@ -44,9 +44,9 @@ test('unauth user cannot retrieve paginated recipes', function () {
     $token = 'invalid-token';
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
-    ])->getJson('/api/recipes' . '?page=1&per_page=15');
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
+    ])->getJson('/api/recipes'.'?page=1&per_page=15');
 
     $response->assertStatus(401);
 });

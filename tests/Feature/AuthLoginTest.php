@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use App\Models\User;
 
 uses(RefreshDatabase::class);
 
@@ -16,19 +16,19 @@ test('new user successfully signed up through google and is given a token', func
                     'providerUserInfo' => [
                         [
                             'providerId' => 'google.com',
-                            'rawId' => '100200300400500', 
-                            'email' => 'testuser@gmail.com', 
-                            'displayName' => 'Test User',  
-                            'photoUrl' => 'https://lh3.googleusercontent.com/a/test'
-                        ]
-                    ]
-                ]
-            ]
+                            'rawId' => '100200300400500',
+                            'email' => 'testuser@gmail.com',
+                            'displayName' => 'Test User',
+                            'photoUrl' => 'https://lh3.googleusercontent.com/a/test',
+                        ],
+                    ],
+                ],
+            ],
         ], 200),
     ]);
 
     $response = $this->postJson('/api/auth/google', [
-       'id_token' => 'valid_id_token'
+        'id_token' => 'valid_id_token',
     ]);
 
     $response->assertStatus(200);
@@ -40,8 +40,8 @@ test('new user successfully signed up through google and is given a token', func
                 'name',
                 'email',
             ],
-            'token'
-        ]
+            'token',
+        ],
     ]);
     $this->assertDatabaseCount('users', 1);
     $this->assertDatabaseCount('personal_access_tokens', 1);
@@ -59,19 +59,19 @@ test('existing user successfully signed up through google and is given a token',
                     'providerUserInfo' => [
                         [
                             'providerId' => 'google.com',
-                            'rawId' => $user->google_id, 
-                            'email' => $user->email, 
-                            'displayName' => $user->name,  
-                            'photoUrl' => $user->avatar
-                        ]
-                    ]
-                ]
-            ]
+                            'rawId' => $user->google_id,
+                            'email' => $user->email,
+                            'displayName' => $user->name,
+                            'photoUrl' => $user->avatar,
+                        ],
+                    ],
+                ],
+            ],
         ], 200),
     ]);
 
     $response = $this->postJson('/api/auth/google', [
-       'id_token' => 'valid_id_token'
+        'id_token' => 'valid_id_token',
     ]);
 
     $response->assertStatus(200);
@@ -83,8 +83,8 @@ test('existing user successfully signed up through google and is given a token',
                 'name',
                 'email',
             ],
-            'token'
-        ]
+            'token',
+        ],
     ]);
     $this->assertDatabaseCount('users', 1);
     $this->assertDatabaseCount('personal_access_tokens', 2);
@@ -92,14 +92,14 @@ test('existing user successfully signed up through google and is given a token',
 
 test('user cannot sign up or login with invalid google id token', function () {
     $response = $this->postJson('/api/auth/google', [
-       'id_token' => 'invalid_id_token'
+        'id_token' => 'invalid_id_token',
     ]);
 
     $response->assertStatus(422);
     $response->assertJsonStructure([
         'success',
         'message',
-        'data'
+        'data',
     ]);
     $this->assertDatabaseCount('users', 0);
     $this->assertDatabaseCount('personal_access_tokens', 0);
@@ -110,8 +110,8 @@ test('user successfully verified', function () {
     $token = $user->createToken('test-token')->plainTextToken;
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->getJson('/api/auth/me');
 
     $response->assertStatus(200);
@@ -125,8 +125,8 @@ test('unauth user cannot be verified', function () {
     $token = 'invalid-token';
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->getJson('/api/auth/me');
 
     $response->assertStatus(401);

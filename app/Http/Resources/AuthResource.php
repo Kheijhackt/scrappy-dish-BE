@@ -17,9 +17,9 @@ class AuthResource extends JsonResource
         return [
             'user' => [
                 'name' => $this['name'],
-                'email' => $this['email']
+                'email' => $this['email'],
             ],
-            'token' => $this['token']
+            'token' => $this['token'],
         ];
     }
 }

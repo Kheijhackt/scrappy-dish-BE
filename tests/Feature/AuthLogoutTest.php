@@ -1,7 +1,7 @@
 <?php
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\User;
 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -9,10 +9,9 @@ test('auth user can logout and deletes the currently owned token', function () {
     $user = User::factory()->create();
     $token = $user->createToken('test-token')->plainTextToken;
 
-
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->getJson('/api/logout');
 
     $response->assertStatus(200);
@@ -26,8 +25,8 @@ test('unauth user cannot logout', function () {
     $token = 'invalid-token';
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->getJson('/api/logout');
 
     $response->assertStatus(401);
@@ -37,16 +36,16 @@ test('unauth user cannot logout', function () {
 
 test('auth user can logout all logged in sessions and deletes all owned tokens', function () {
     $user = User::factory()->create();
-    
+
     $tokens = collect(range(1, 10))
-        ->map(fn() => $user->createToken('test-token')->plainTextToken)
+        ->map(fn () => $user->createToken('test-token')->plainTextToken)
         ->all();
 
     $authToken = fake()->randomElement($tokens);
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $authToken,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$authToken,
+        'Accept' => 'application/json',
     ])->getJson('/api/logout-all');
 
     $response->assertStatus(200);
@@ -56,17 +55,17 @@ test('auth user can logout all logged in sessions and deletes all owned tokens',
 
 test('unauth user cannot logout all logged in sessions', function () {
     $user = User::factory()->create();
-    
+
     $tokens = collect(range(1, 10))
-        ->map(fn() => $user->createToken('test-token')->plainTextToken)
+        ->map(fn () => $user->createToken('test-token')->plainTextToken)
         ->all();
 
     $authToken = fake()->randomElement($tokens);
     $currentToken = 'invalid-token';
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $currentToken,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$currentToken,
+        'Accept' => 'application/json',
     ])->getJson('/api/logout-all');
 
     $response->assertStatus(401);

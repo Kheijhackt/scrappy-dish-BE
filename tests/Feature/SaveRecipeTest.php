@@ -1,6 +1,7 @@
 <?php
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -24,8 +25,8 @@ test('auth user can save a recipe', function () {
     ];
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->postJson('/api/recipes/save', $payload);
 
     $response->assertStatus(200);
@@ -41,7 +42,7 @@ test('auth user can save a recipe', function () {
         'dish_tags' => json_encode($payload['dish_tags']),
         'general_tags' => json_encode($payload['general_tags']),
         'nutrition_notes' => $payload['nutrition_notes'],
-        'user_id' => $user->id
+        'user_id' => $user->id,
     ]);
     $this->assertDatabaseCount('recipes', 1);
 });
@@ -65,8 +66,8 @@ test('unauth user cannot save a recipe', function () {
     ];
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->postJson('/api/recipes/save', $payload);
 
     $response->assertStatus(401);
@@ -83,7 +84,7 @@ test('auth user submits a recipe with invalid data', function () {
         'ingredients_used' => ['Ingredient 1', 'Ingredient 2'],
         'steps' => ['Step 1', 'Step 2'],
         'cook_time_minutes' => 30,
-        'difficulty' => "invalid",
+        'difficulty' => 'invalid',
         'servings' => 4,
         'cuisine_tags' => ['Cuisine 1', 'Cuisine 2'],
         'dish_tags' => ['Dish 1', 'Dish 2'],
@@ -92,8 +93,8 @@ test('auth user submits a recipe with invalid data', function () {
     ];
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->postJson('/api/recipes/save', $payload);
 
     $response->assertStatus(422);

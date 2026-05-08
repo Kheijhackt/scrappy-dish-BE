@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipeAiController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Route;
 
 Route::post('/recipes/suggest-single', [RecipeAiController::class, 'suggestSingle'])->name('recipes.suggest-single');
 Route::post('/recipes/suggest-multiple', [RecipeAiController::class, 'suggestMultiple'])->name('recipes.suggest-multiple');

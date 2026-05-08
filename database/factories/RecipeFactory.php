@@ -2,14 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Recipe;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Recipe;
 
 /**
  * @extends Factory<Recipe>
  */
-
 class RecipeFactory extends Factory
 {
     public function definition(): array

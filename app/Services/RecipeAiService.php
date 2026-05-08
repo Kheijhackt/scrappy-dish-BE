@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Traits\CallsRecipeAI;
-use Illuminate\Support\Facades\Http;
-use App\Services\AiResponseRecipeValidator;
 
 class RecipeAiService
 {
@@ -62,19 +60,19 @@ class RecipeAiService
             'max_tokens' => 1000,
             'top_p' => 0.9,
             'frequency_penalty' => 0,
-            'presence_penalty' => 0
+            'presence_penalty' => 0,
         ]);
 
         $validatorResult = $this->validator->isValidSingle($response, $data);
 
-        if(!$validatorResult['valid']) {
+        if (! $validatorResult['valid']) {
             throw new \Exception($validatorResult['message']);
         }
 
         return $response;
     }
 
-    public function generateMultiple(array $data) 
+    public function generateMultiple(array $data)
     {
         $prompt = $this->buildPrompt($data);
         $systemMessage = "
@@ -126,23 +124,23 @@ class RecipeAiService
             'max_tokens' => 20000,
             'top_p' => 0.9,
             'frequency_penalty' => 0,
-            'presence_penalty' => 0
+            'presence_penalty' => 0,
         ]);
 
         $validatorResult = $this->validator->isValidMultiple($response, $data);
 
-        if(!$validatorResult['valid']) {
+        if (! $validatorResult['valid']) {
             throw new \Exception($validatorResult['message']);
         }
 
         return $response;
-        
+
     }
 
     private function buildPrompt(array $data): string
     {
         return "Generate recipe suggestions using ONLY this input data:\n\n"
-            . json_encode($data, JSON_PRETTY_PRINT)
-            . "\n\nReturn STRICT JSON only. Follow system rules exactly.";
+            .json_encode($data, JSON_PRETTY_PRINT)
+            ."\n\nReturn STRICT JSON only. Follow system rules exactly.";
     }
 }

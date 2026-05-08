@@ -6,15 +6,19 @@ use App\Models\User;
 
 class UserService
 {
-  public function updateCurrentUser(User $user, array $data) {
-    $user = User::findOrFail($user->id);
-    $user->update($data);
-    return $user;
-  }
+    public function updateCurrentUser(User $user, array $data)
+    {
+        $user = User::findOrFail($user->id);
+        $user->update($data);
 
-  public function deleteCurrentUser(User $user) {
-    $user = User::findOrFail($user->id);
-    $user->delete();
-    return $user;
-  }
+        return $user;
+    }
+
+    public function deleteCurrentUser(User $user)
+    {
+        $user = User::findOrFail($user->id);
+        $user->delete();
+
+        return $user;
+    }
 }

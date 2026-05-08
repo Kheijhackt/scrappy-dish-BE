@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
 uses(RefreshDatabase::class);
 
 test('auth user can update current user', function () {
@@ -9,8 +10,8 @@ test('auth user can update current user', function () {
     $token = $user->createToken('test-token')->plainTextToken;
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->patchJson('/api/user', [
         'name' => 'Updated name',
     ]);
@@ -19,7 +20,7 @@ test('auth user can update current user', function () {
     $response->assertJsonStructure([
         'success',
         'message',
-        'data'
+        'data',
     ]);
     $this->assertTrue($response['data']['name'] == 'Updated name');
 });
@@ -29,8 +30,8 @@ test('auth user cannot update current user due to request validation error', fun
     $token = $user->createToken('test-token')->plainTextToken;
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->patchJson('/api/user', [
         'name' => '',
     ]);
@@ -43,8 +44,8 @@ test('unauth user cannot update current user', function () {
     $token = 'invalid-token';
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json'
+        'Authorization' => 'Bearer '.$token,
+        'Accept' => 'application/json',
     ])->patchJson('/api/user', [
         'name' => 'Updated name',
     ]);

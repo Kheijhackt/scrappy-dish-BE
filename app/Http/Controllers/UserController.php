@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\ApiResponse;
-use Illuminate\Http\Request;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
-use App\Http\Requests\UpdateUserRequest;
+use App\Traits\ApiResponse;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     use ApiResponse;
+
     public function getCurrentUser(Request $request)
     {
         $result = $request->user();
         try {
             $resource = (new UserResource($result));
+
             return ApiResponse::success($resource->toArray($request), 'User retrieved successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());
@@ -28,6 +30,7 @@ class UserController extends Controller
         try {
             $result = $service->updateCurrentUser($request->user(), $request->validated());
             $resource = (new UserResource($result));
+
             return ApiResponse::success($resource->toArray($request), 'User updated successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());
@@ -40,6 +43,7 @@ class UserController extends Controller
         try {
             $result = $service->deleteCurrentUser($request->user());
             $resource = (new UserResource($result));
+
             return ApiResponse::success($resource->toArray($request), 'User deleted successfully');
         } catch (\Throwable $e) {
             return ApiResponse::error([], $e->getMessage());

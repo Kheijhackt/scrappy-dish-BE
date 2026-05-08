@@ -30,3 +30,6 @@ jobs:
 
       - name: Run feature tests
         run: php artisan test --testsuite=Feature
+
+      - name: Run Pint test
+        run: ./vendor/bin/pint --test
