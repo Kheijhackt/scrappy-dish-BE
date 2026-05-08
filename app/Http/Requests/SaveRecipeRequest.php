@@ -27,7 +27,7 @@ class SaveRecipeRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string'],
-            'description' => ['nullable', 'string'],
+            'description' => ['required', 'string'],
 
             'ingredients_used' => ['required', 'array', 'min:1'],
             'ingredients_used.*' => ['string'],
@@ -39,16 +39,16 @@ class SaveRecipeRequest extends FormRequest
             'difficulty' => ['required', 'integer', 'between:1,10'],
             'servings' => ['required', 'integer', 'min:1'],
 
-            'cuisine_tags' => ['sometimes', 'array'],
+            'cuisine_tags' => ['required', 'array'],
             'cuisine_tags.*' => ['string'],
 
-            'dish_tags' => ['sometimes', 'array'],
+            'dish_tags' => ['required', 'array'],
             'dish_tags.*' => ['string'],
 
-            'general_tags' => ['sometimes', 'array'],
+            'general_tags' => ['required', 'array'],
             'general_tags.*' => ['string'],
 
-            'nutrition_notes' => ['nullable', 'string'],
+            'nutrition_notes' => ['required', 'string'],
         ];
     }
 
