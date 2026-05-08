@@ -1,4 +1,4 @@
-name: Scrappy Dish Feature and Unit Tests
+name: Unit, Feature and Pint Tests
 
 on:
   push:
