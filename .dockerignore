@@ -1,0 +1,12 @@
+/vendor
+/node_modules
+/.env
+/.env.*
+!.env.example
+/.git
+/.idea
+/.vscode
+/docker-compose.yml
+/Dockerfile.local
+/storage/logs/*.log
+/public/hot
