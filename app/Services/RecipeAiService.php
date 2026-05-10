@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Traits\CallsRecipeAI;
 use App\Models\User;
+use App\Traits\CallsRecipeAI;
 
 class RecipeAiService
 {
@@ -147,10 +147,11 @@ class RecipeAiService
             ."\n\nReturn STRICT JSON only. Follow system rules exactly.";
     }
 
-    private function appendFromUserPreferences(User $user, array $data) {
+    private function appendFromUserPreferences(User $user, array $data)
+    {
         $user_preferences = $user->preferences()->first();
 
-        $data['available_ingredients'] = $user_preferences->available_ingredients?? [];
+        $data['available_ingredients'] = $user_preferences->available_ingredients ?? [];
         $data['dietary_preferences'] = $user_preferences->dietary_preferences ?? [];
         $data['cuisine_preferences'] = $user_preferences->cuisine_preferences ?? [];
         $data['dish_preferences'] = $user_preferences->dish_preferences ?? [];

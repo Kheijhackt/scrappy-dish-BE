@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use App\Services\AiResponseRecipeValidator;
 
 test('valid AI response passes single validation', function () {
-    $validator = new AiResponseRecipeValidator();
+    $validator = new AiResponseRecipeValidator;
 
     $request = [
         'available_ingredients' => ['egg', 'rice'],
@@ -33,7 +33,7 @@ test('valid AI response passes single validation', function () {
 });
 
 test('invalid AI response fails single validation', function () {
-    $validator = new AiResponseRecipeValidator();
+    $validator = new AiResponseRecipeValidator;
 
     $request = [
         'available_ingredients' => ['egg', 'rice'],
@@ -60,7 +60,7 @@ test('invalid AI response fails single validation', function () {
 });
 
 test('valid AI response passes multiple validation', function () {
-    $validator = new AiResponseRecipeValidator();
+    $validator = new AiResponseRecipeValidator;
 
     $request = [
         'available_ingredients' => ['egg', 'rice'],
@@ -105,7 +105,7 @@ test('valid AI response passes multiple validation', function () {
 });
 
 test('invalid ingredient fails multiple validation', function () {
-    $validator = new AiResponseRecipeValidator();
+    $validator = new AiResponseRecipeValidator;
 
     $request = [
         'available_ingredients' => ['egg', 'rice'],

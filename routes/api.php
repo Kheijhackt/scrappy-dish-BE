@@ -6,8 +6,6 @@ use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-
-
 Route::post('/auth/google', [AuthController::class, 'continueWithGoogle'])->name('auth.google');
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -25,5 +23,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/recipes/save', [RecipeController::class, 'saveRecipe'])->name('recipes.save');
     Route::get('/recipes/{id}', [RecipeController::class, 'getRecipeById'])->name('recipes.get-recipe');
     Route::get('/recipes', [RecipeController::class, 'getPaginatedRecipes'])->name('recipes.get-paginated-recipes');
-    Route::delete('/recipes/{id}', [RecipeController::class, 'deleteRecipeById'])->name('recipes.delete-recipe');    
+    Route::delete('/recipes/{id}', [RecipeController::class, 'deleteRecipeById'])->name('recipes.delete-recipe');
 });

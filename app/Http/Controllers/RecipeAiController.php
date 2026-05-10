@@ -16,12 +16,12 @@ class RecipeAiController extends Controller
     public function suggestSingle(Request $request, RecipeAiService $service)
     {
         $result = null;
-       
-            $result = $service->generateSingle($request->user(), []);
-            $resource = (new RecipeSingleResource($result));
 
-            return ApiResponse::success($resource->toArray($request), 'Recipe generated successfully');
-        
+        $result = $service->generateSingle($request->user(), []);
+        $resource = (new RecipeSingleResource($result));
+
+        return ApiResponse::success($resource->toArray($request), 'Recipe generated successfully');
+
     }
 
     public function suggestMultiple(SuggestMultipleRecipeRequest $request, RecipeAiService $service)
