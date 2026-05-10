@@ -26,24 +26,9 @@ class SuggestMultipleRecipeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'available_ingredients' => ['required', 'array', 'min:1'],
-            'available_ingredients.*' => ['required', 'string'],
-
-            'dietary_preferences' => ['nullable', 'array'],
-            'dietary_preferences.*' => ['string'],
-
-            'cuisine_preferences' => ['nullable', 'array'],
-            'cuisine_preferences.*' => ['string'],
-
-            'dish_preferences' => ['nullable', 'array'],
-            'dish_preferences.*' => ['string'],
-
-            'available_equipments' => ['nullable', 'array'],
-            'available_equipments.*' => ['string'],
-
-            'cook_time_minutes' => ['nullable', 'integer'],
-            'difficulty' => ['nullable', 'integer', 'min:1', 'max:10'],
-            'servings' => ['nullable', 'integer', 'min:1'],
+            'cook_time_minutes' => ['sometimes', 'integer'],
+            'difficulty' => ['sometimes', 'integer', 'min:1', 'max:10'],
+            'servings' => ['sometimes', 'integer', 'min:1'],
             'additional_instructions' => ['nullable', 'string'],
         ];
     }

@@ -50,8 +50,24 @@ class User extends Authenticatable
         return $this->hasMany(Recipe::class);
     }
 
+    public function preferences()
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
     protected static function booted(): void
     {
+        static::created(function (User $user) {
+            $user->preferences()->create([
+                'user_id' => $user->id,
+                'available_ingredients' => ['salt', 'pepper', 'water', 'oil', 'eggs', 'rice'],
+                'dietary_preferences' => [],
+                'cuisine_preferences' => [],
+                'dish_preferences' => [],
+                'available_equipments' => ['knife', 'bowl', 'pan', 'spatula'],
+            ]);
+        });
+
         static::deleting(function (User $user) {
             $user->tokens()->delete();
         });

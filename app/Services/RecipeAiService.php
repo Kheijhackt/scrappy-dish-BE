@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Traits\CallsRecipeAI;
+use App\Models\User;
 
 class RecipeAiService
 {
@@ -10,9 +11,10 @@ class RecipeAiService
 
     public function __construct(private AiResponseRecipeValidator $validator) {}
 
-    public function generateSingle(array $data)
+    public function generateSingle(User $user, array $data)
     {
-        $prompt = $this->buildPrompt($data);
+        $appendedData = $this->appendFromUserPreferences($user, $data);
+        $prompt = $this->buildPrompt($user, $appendedData);
         $systemMessage = "
         You are a specialized Recipe Logic Engine. Your sole purpose is to transform user-provided ingredient data into a culinary JSON response. You are a strict JSON API; do not return any text, markdown, or commentary outside of the JSON object.
 
@@ -63,7 +65,7 @@ class RecipeAiService
             'presence_penalty' => 0,
         ]);
 
-        $validatorResult = $this->validator->isValidSingle($response, $data);
+        $validatorResult = $this->validator->isValidSingle($response, $appendedData);
 
         if (! $validatorResult['valid']) {
             throw new \Exception($validatorResult['message']);
@@ -72,9 +74,10 @@ class RecipeAiService
         return $response;
     }
 
-    public function generateMultiple(array $data)
+    public function generateMultiple(User $user, array $data)
     {
-        $prompt = $this->buildPrompt($data);
+        $appendedData = $this->appendFromUserPreferences($user, $data);
+        $prompt = $this->buildPrompt($user, $appendedData);
         $systemMessage = "
         You are a specialized Recipe Logic Engine. Your sole purpose is to transform user-provided ingredient data into a culinary JSON response containing MORE THAN 5 DISTINCT recipes. You are a strict JSON API; do not return any text, markdown, or commentary outside of the JSON object.
 
@@ -127,7 +130,7 @@ class RecipeAiService
             'presence_penalty' => 0,
         ]);
 
-        $validatorResult = $this->validator->isValidMultiple($response, $data);
+        $validatorResult = $this->validator->isValidMultiple($response, $appendedData);
 
         if (! $validatorResult['valid']) {
             throw new \Exception($validatorResult['message']);
@@ -137,10 +140,22 @@ class RecipeAiService
 
     }
 
-    private function buildPrompt(array $data): string
+    private function buildPrompt(User $user, array $data): string
     {
         return "Generate recipe suggestions using ONLY this input data:\n\n"
             .json_encode($data, JSON_PRETTY_PRINT)
             ."\n\nReturn STRICT JSON only. Follow system rules exactly.";
+    }
+
+    private function appendFromUserPreferences(User $user, array $data) {
+        $user_preferences = $user->preferences()->first();
+
+        $data['available_ingredients'] = $user_preferences->available_ingredients?? [];
+        $data['dietary_preferences'] = $user_preferences->dietary_preferences ?? [];
+        $data['cuisine_preferences'] = $user_preferences->cuisine_preferences ?? [];
+        $data['dish_preferences'] = $user_preferences->dish_preferences ?? [];
+        $data['available_equipments'] = $user_preferences->available_equipments ?? [];
+
+        return $data;
     }
 }

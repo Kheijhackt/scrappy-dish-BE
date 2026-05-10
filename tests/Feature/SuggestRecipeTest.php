@@ -3,31 +3,32 @@
 namespace Tests\Feature;
 
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class SuggestRecipeTest extends TestCase
-{
-    public function test_single_recipe_endpoint_returns_success_response()
+uses(RefreshDatabase::class);
+
+
+test('auth user can retrieve one AI suggested recipe', function ()
     {
+        $user = User::factory()->create();
+        $token = $user->createToken('test-token')->plainTextToken;
+
         Http::fake([
             'hermes.ai.unturf.com/*' => Http::response([
                 'choices' => [
                     [
                         'message' => [
                             'content' => json_encode([
-                                'title' => 'Keto Chicken Salad',
-                                'description' => 'Healthy keto salad',
-                                'ingredients_used' => [
-                                    'chicken breast',
-                                    'spinach',
-                                    'avocado',
-                                ],
+                                'title' => 'Test title',
+                                'description' => 'Sample description',
+                                'ingredients_used' => [],
                                 'steps' => [
                                     'Cook chicken',
                                     'Mix ingredients',
                                     'Serve',
                                 ],
-                                'cook_time_minutes' => 10,
+                                'cook_time_minutes' => 5,
                                 'difficulty' => 1,
                                 'servings' => 1,
                                 'cuisine_tags' => ['Mediterranean'],
@@ -42,17 +43,9 @@ class SuggestRecipeTest extends TestCase
             ], 200),
         ]);
 
-        $response = $this->postJson('/api/recipes/suggest-single', [
-            'available_ingredients' => ['chicken breast', 'spinach', 'avocado'],
-            'dietary_preferences' => ['keto'],
-            'cuisine_preferences' => ['Mediterranean'],
-            'dish_preferences' => ['lunch'],
-            'available_equipments' => ['knife', 'bowl'],
-            'cook_time_minutes' => 10,
-            'difficulty' => 1,
-            'servings' => 1,
-            'additional_instructions' => 'Make it keto',
-        ]);
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer '.$token
+        ])->getJson('/api/recipes/suggest-single');
 
         $response->assertStatus(200);
 
@@ -74,32 +67,55 @@ class SuggestRecipeTest extends TestCase
                 'created_epoch',
             ],
         ]);
+        
     }
+);
 
-    public function test_single_recipe_endpoint_returns_error_response_due_to_bad_request()
+    test('unauth user cannot retrieve one AI suggested recipe', function ()
     {
         Http::fake([
             'hermes.ai.unturf.com/*' => Http::response([
-                'choices' => [],
-            ], 422),
+                'choices' => [
+                    [
+                        'message' => [
+                            'content' => json_encode([
+                                'title' => 'Test title',
+                                'description' => 'Sample description',
+                                'ingredients_used' => [],
+                                'steps' => [
+                                    'Cook chicken',
+                                    'Mix ingredients',
+                                    'Serve',
+                                ],
+                                'cook_time_minutes' => 5,
+                                'difficulty' => 1,
+                                'servings' => 1,
+                                'cuisine_tags' => ['Mediterranean'],
+                                'dish_tags' => ['lunch'],
+                                'general_tags' => ['keto'],
+                                'nutrition_notes' => 'Low carb and high fat',
+                                'created_epoch' => 1777707148,
+                            ]),
+                        ],
+                    ],
+                ],
+            ], 200),
         ]);
 
-        $response = $this->postJson('/api/recipes/suggest-single', [
-            'available_ingredients' => [],
-            'dietary_preferences' => ['keto'],
-            'cuisine_preferences' => ['Mediterranean'],
-            'dish_preferences' => ['lunch'],
-            'available_equipments' => ['knife', 'bowl'],
-            'cook_time_minutes' => 10,
-            'difficulty' => 1,
-            'servings' => 1,
-            'additional_instructions' => 'Make it keto',
-        ]);
+        $user = User::factory()->create();
+        $token = $user->createToken('test-token')->plainTextToken;
+        $token = 'invalid-token';
 
-        $response->assertStatus(422);
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token
+            ])->getJson('/api/recipes/suggest-single');
+
+        $response->assertStatus(401);
     }
+    );
 
-    public function test_multiple_recipe_endpoint_returns_success_response()
+    test('auth user can retrieve multiple AI suggested recipes', function ()
     {
         Http::fake([
             'hermes.ai.unturf.com/*' => Http::response([
@@ -112,11 +128,7 @@ class SuggestRecipeTest extends TestCase
                                     [
                                         'title' => 'Keto Chicken Salad',
                                         'description' => 'Healthy keto salad',
-                                        'ingredients_used' => [
-                                            'chicken breast',
-                                            'spinach',
-                                            'avocado',
-                                        ],
+                                        'ingredients_used' => [],
                                         'steps' => [
                                             'Cook chicken',
                                             'Mix ingredients',
@@ -134,9 +146,6 @@ class SuggestRecipeTest extends TestCase
                                         'title' => 'Keto Chicken Salad',
                                         'description' => 'Healthy keto salad',
                                         'ingredients_used' => [
-                                            'chicken breast',
-                                            'spinach',
-                                            'avocado',
                                         ],
                                         'steps' => [
                                             'Cook chicken',
@@ -158,17 +167,20 @@ class SuggestRecipeTest extends TestCase
             ], 200),
         ]);
 
-        $response = $this->postJson('/api/recipes/suggest-multiple', [
-            'available_ingredients' => ['chicken breast', 'spinach', 'avocado'],
-            'dietary_preferences' => ['keto'],
-            'cuisine_preferences' => ['Mediterranean'],
-            'dish_preferences' => ['lunch'],
-            'available_equipments' => ['knife', 'bowl'],
+        $user = User::factory()->create();
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $payload = [
             'cook_time_minutes' => 10,
             'difficulty' => 1,
             'servings' => 1,
             'additional_instructions' => 'Make it keto',
-        ]);
+        ];
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token
+        ])->postJson('/api/recipes/suggest-multiple', $payload);
 
         $response->assertStatus(200);
 
@@ -208,27 +220,75 @@ class SuggestRecipeTest extends TestCase
             ],
         ]);
     }
+    );
 
-    public function test_multiple_recipe_endpoint_returns_error_response_due_to_bad_request()
+    test('auth user cannot retrieve multiple AI suggested recipes due to bad request', function ()
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $payload = [
+            'cook_time_minutes' => 10,
+            'difficulty' => 1,
+            'servings' => 'invalid',
+            'additional_instructions' => 'Make it keto',
+        ];
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token
+        ])->postJson('/api/recipes/suggest-multiple', $payload);
+
+        $response->assertStatus(422);
+    });
+
+    test('unauth user cannot retrieve multiple AI suggested recipes', function ()
     {
         Http::fake([
             'hermes.ai.unturf.com/*' => Http::response([
-                'choices' => [],
-            ], 422),
+                'choices' => [
+                    [
+                        'message' => [
+                            'content' => json_encode([
+                                'title' => 'Test title',
+                                'description' => 'Sample description',
+                                'ingredients_used' => [],
+                                'steps' => [
+                                    'Cook chicken',
+                                    'Mix ingredients',
+                                    'Serve',
+                                ],
+                                'cook_time_minutes' => 5,
+                                'difficulty' => 1,
+                                'servings' => 1,
+                                'cuisine_tags' => ['Mediterranean'],
+                                'dish_tags' => ['lunch'],
+                                'general_tags' => ['keto'],
+                                'nutrition_notes' => 'Low carb and high fat',
+                                'created_epoch' => 1777707148,
+                            ]),
+                        ],
+                    ],
+                ],
+            ], 200),
         ]);
 
-        $response = $this->postJson('/api/recipes/suggest-multiple', [
-            'available_ingredients' => [],
-            'dietary_preferences' => ['keto'],
-            'cuisine_preferences' => ['Mediterranean'],
-            'dish_preferences' => ['lunch'],
-            'available_equipments' => ['knife', 'bowl'],
+        $user = User::factory()->create();
+        $token = $user->createToken('test-token')->plainTextToken;
+        $token = 'invalid-token';
+
+        $payload = [
             'cook_time_minutes' => 10,
             'difficulty' => 1,
-            'servings' => 1,
+            'servings' => 'invalid',
             'additional_instructions' => 'Make it keto',
-        ]);
+        ];
 
-        $response->assertStatus(422);
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$token
+        ])->postJson('/api/recipes/suggest-multiple', $payload);
+
+        $response->assertStatus(401);
     }
-}
+    );

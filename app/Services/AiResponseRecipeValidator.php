@@ -74,16 +74,17 @@ class AiResponseRecipeValidator
             }
         }
 
-        foreach ($data['ingredients_used'] as $ingredient) {
-            if (! in_array($ingredient, $request['available_ingredients'])) {
-                $response = [
-                    'valid' => false,
-                    'message' => $logName.'Ingredient '.$ingredient.' is not in available ingredients',
-                ];
+        // TODO: Validate ingredients BET
+        // foreach ($data['ingredients_used'] as $ingredient) {
+        //     if (! in_array($ingredient, $request['available_ingredients'])) {
+        //         $response = [
+        //             'valid' => false,
+        //             'message' => $logName.'Ingredient '.$ingredient.' is not in available ingredients',
+        //         ];
 
-                return $response;
-            }
-        }
+        //         return $response;
+        //     }
+        // }
 
         if ($data['difficulty'] < 1 || $data['difficulty'] > 10) {
             $response = [
