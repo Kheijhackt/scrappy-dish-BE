@@ -12,20 +12,15 @@ This app provides recipe suggestions based on available ingredients and other cu
 
 ---
 
-## Public Endpoints
+## Endpoints
+
+These endpoints require a valid auth token to be attached to the header as bearer token for each request.
 
 ### AI Suggestions
 
-#### POST : `/api/recipes/suggest-single`
+#### GET : `/api/recipes/suggest-single`
 
-This endpoint returns a suggested single recipe based on user's available ingredients and equipments.
-
-**Request**
-
-```
-available_ingredients: string[], required,
-available_equipments: string[]
-```
+This endpoint returns a suggested single recipe based on user preferences.
 
 #### POST : `/api/recipes/suggest-multiple`
 
@@ -34,11 +29,6 @@ This endpoint returns suggested recipes based on user's customized parameters.
 **Request**
 
 ```
-available_ingredients: string[], required,
-dietary_preferences: string[],
-cuisine_preferences: string[],
-dish_preferences: string[],
-available_equipments: string[],
 cook_time_minutes: integer,
 difficulty: integer, min:1, max:10,
 servings: integer, min:1,
@@ -46,10 +36,6 @@ additional_instructions: string
 ```
 
 ---
-
-## Private Endpoints
-
-These endpoints require a valid auth token to be attached to the header as bearer token for each request.
 
 ### Authentication
 
@@ -75,6 +61,8 @@ This endpoint deletes the user's current token.
 
 This endpoint deletes all existing tokens of the user.
 
+---
+
 ### User
 
 #### GET : `/api/user`
@@ -95,6 +83,8 @@ avatar: string
 #### DELETE : `/api/user`
 
 This endpoint deletes the current user and all its owned recipes and tokens.
+
+---
 
 ### Recipe
 
