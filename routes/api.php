@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipeAiController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPreferencesController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/google', [AuthController::class, 'continueWithGoogle'])->name('auth.google');
@@ -16,6 +17,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'getCurrentUser'])->name('users.get-current-user');
     Route::patch('/user', [UserController::class, 'updateCurrentUser'])->name('users.update-current-user');
     Route::delete('/user', [UserController::class, 'deleteCurrentUser'])->name('users.delete-current-user');
+
+    Route::get('/user-preferences', [UserPreferencesController::class, 'getUserPreferences'])->name('user-preferences.get-user-preferences');
 
     Route::get('/recipes/suggest-single', [RecipeAiController::class, 'suggestSingle'])->name('recipes.suggest-single');
     Route::post('/recipes/suggest-multiple', [RecipeAiController::class, 'suggestMultiple'])->name('recipes.suggest-multiple');
