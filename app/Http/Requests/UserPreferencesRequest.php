@@ -29,7 +29,7 @@ class UserPreferencesRequest extends FormRequest
             'dietary_preferences' => ['sometimes', 'array'],
             'dietary_preferences.*' => ['string'],
 
-            'cuisine_preferences' => ['sometimes', 'array',],
+            'cuisine_preferences' => ['sometimes', 'array'],
             'cuisine_preferences.*' => ['string'],
 
             'dish_preferences' => ['sometimes', 'array'],
