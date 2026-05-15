@@ -86,6 +86,28 @@ This endpoint deletes the current user and all its owned recipes and tokens.
 
 ---
 
+### User preferences
+
+#### GET : `/api/user-preferences`
+
+This endpoint retrieves the user preferences.
+
+#### PATCH : `api/user/user-preferences`
+
+This endpoint partially updates the user preferences based on the request.
+
+**Request**
+
+```
+available_ingredients: string[], min: 1
+dietary_preferences: string[]
+cuisine_preferences: string[]
+dish_preferences: string[]
+available_equipments: string[]
+```
+
+---
+
 ### Recipe
 
 #### POST : `/api/recipes/save`
@@ -101,7 +123,7 @@ ingredients_used: string[], required,
 steps: string[], required,
 cook_time_minutes: integer, required,
 difficulty: integer, min:1, max:10, required,
-serbings: integer, min:1, required,
+servings: integer, min:1, required,
 cuisine_tags: string[], required,
 dish_tags: string[], required,
 general_tags: string[], required,
