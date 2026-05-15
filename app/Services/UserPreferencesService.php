@@ -11,4 +11,12 @@ class UserPreferencesService
   {
     return $user->preferences;
   }
+
+  public function updateUserPreference(User $user, array $data): UserPreference
+  {
+    $userPreference = $user->preferences;
+    $userPreference->updateOrFail($data);
+
+    return $userPreference;
+  }
 }

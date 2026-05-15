@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/user', [UserController::class, 'deleteCurrentUser'])->name('users.delete-current-user');
 
     Route::get('/user-preferences', [UserPreferencesController::class, 'getUserPreferences'])->name('user-preferences.get-user-preferences');
+    Route::patch('/user-preferences', [UserPreferencesController::class, 'updateUserPreferences'])->name('user-preferences.update-user-preferences');
 
     Route::get('/recipes/suggest-single', [RecipeAiController::class, 'suggestSingle'])->name('recipes.suggest-single');
     Route::post('/recipes/suggest-multiple', [RecipeAiController::class, 'suggestMultiple'])->name('recipes.suggest-multiple');
